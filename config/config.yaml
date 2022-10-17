@@ -1,0 +1,8 @@
+controller:
+  ip: 'localhoast'
+  port: '8080'
+  capability_period: 10
+
+source:
+  IP: 'localhost'
+  serial: M00819452
