@@ -1,5 +1,5 @@
 #standards imports
-import json, logging
+import json
 
 #imports to use AMQP 1.0 communication protocol
 from proton import Message
@@ -15,11 +15,9 @@ class Send(MessagingHandler):
         self.total = 1
 
     def on_connection_error(self, event):
-        logging.error("Connection error")
         return super().on_connection_error(event)
     
     def on_transport_error(self, event) -> None:
-        logging.error("Transport error")
         return super().on_transport_error(event)
         
     def on_start(self, event):
@@ -32,16 +30,13 @@ class Send(MessagingHandler):
         event.sender.close()
         
     def on_rejected(self, event):
-        logging.error("msg Rejected")
         return super().on_rejected(event)
         
     def on_accepted(self, event):
         self.confirmed += 1
         if self.confirmed == self.total:
-            logging.info("The specification msg sent to",self.topic)
             event.connection.close()
     
 
     def on_disconnected(self, event):
-        logging.info("disconnected")
         self.sent = self.confirmed

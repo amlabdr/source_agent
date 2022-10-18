@@ -7,7 +7,7 @@ with a serial number.
 @author: amlabdr
 '''
 #standards imports
-import json, logging, time, yaml
+import json, time, yaml
 from threading import Thread
 
 #imports to use AMQP 1.0 communication protocol
