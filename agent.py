@@ -32,14 +32,22 @@ yf.close()
 PERIOD = config["controller"]["capability_period"]
 url = config["controller"]["IP"] + config["controller"]["port"]
 
-#publishing the agent capability
-capabilityFile = open('config/capability.json', 'r')
-capabilityData = json.load(capabilityFile)
-capabilityFile.close()
 topic = 'topic://'+'/capabilities'
-thread_send_capability = Thread(target=send_capability, args=(url,topic,PERIOD,capabilityData))
+#publishing the agent measurement capability
+capabilityFile = open('config/measurement_capability.json', 'r')
+measure_capabilityData = json.load(capabilityFile)
+capabilityFile.close()
+thread_send_capability = Thread(target=send_capability, args=(url,topic,PERIOD,measure_capabilityData))
 thread_send_capability.start()
 
+#publishing the agent command capability
+capabilityFile = open('config/command_capability.json', 'r')
+command_capabilityData = json.load(capabilityFile)
+capabilityFile.close()
+thread_send_capability = Thread(target=send_capability, args=(url,topic,PERIOD,command_capabilityData))
+thread_send_capability.start()
+
+
 #start lesstning for a specification from the controller
-topic='topic://'+capabilityData['endpoint']+'/specifications'
+topic='topic://'+command_capabilityData['endpoint']+'/specifications'
 Container(RecvSpecification(url,topic)).run()

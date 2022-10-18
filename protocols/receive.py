@@ -35,5 +35,12 @@ class RecvSpecification(MessagingHandler):
             topic = event.message.reply_to
             Container(Send(self.server,topic, specification_receiptData)).run()
 
+            #agent will do the measurement/commanding
+            if capability == "measure":
+                pass
+            elif capability == "command":
+                pass
+            else:
+                pass
         except Exception:
             traceback.print_exc()
