@@ -1,5 +1,5 @@
 #standards imports
-import json, datetime, traceback
+import json, datetime, traceback, logging
 
 #imports to use AMQP 1.0 communication protocol
 from proton import Message
@@ -27,6 +27,7 @@ class RecvSpecification(MessagingHandler):
             capability = jsonData['capability']
             exec_time = datetime.strptime(when, '%Y-%m-%d %H:%M:%S.%f')
             #2022-05-23 18:03:19.461738'
+            logging.info("specification received for {}".format(capability))
 
             #agent will publish a receipt for spec
             specification_receiptData=jsonData.copy()
@@ -34,7 +35,7 @@ class RecvSpecification(MessagingHandler):
             del specification_receiptData['specification']
             topic = event.message.reply_to
             Container(Send(self.server,topic, specification_receiptData)).run()
-
+            logging.info(" {agent will do the {}}".format(capability))
             #agent will do the measurement/commanding
             if capability == "measure":
                 pass
@@ -44,3 +45,4 @@ class RecvSpecification(MessagingHandler):
                 pass
         except Exception:
             traceback.print_exc()
+            
