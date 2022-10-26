@@ -5,13 +5,17 @@ import json, datetime, traceback, logging
 from proton import Message
 from proton.handlers import MessagingHandler
 from proton.reactor import Container
-from send import Send
+from utils.source import CLD1015
+from utils.send import Send
+
 
 class RecvSpecification(MessagingHandler):
-    def __init__(self, server,topic):
+    def __init__(self, server,topic,serialNumber):
         super(RecvSpecification, self).__init__()
         self.server = server
         self.topic = topic
+        self.serialNumber=serialNumber
+        
         
         
     def on_start(self, event):
@@ -35,14 +39,18 @@ class RecvSpecification(MessagingHandler):
             del specification_receiptData['specification']
             topic = event.message.reply_to
             Container(Send(self.server,topic, specification_receiptData)).run()
-            logging.info(" {agent will do the {}}".format(capability))
+            logging.info("agent will do the {}".format(capability))
             #agent will do the measurement/commanding
-            if capability == "measure":
-                pass
-            elif capability == "command":
-                pass
+            self.source = CLD1015(self.serialNumber)
+            if self.source.FoundDevice and self.connected:
+                if capability == "measure":
+                    pass
+                elif capability == "command":
+                    pass
+                else:
+                    pass
             else:
-                pass
+                logging.info("Cannot connect to source {}".format(self.serialNumber))
         except Exception:
             traceback.print_exc()
             

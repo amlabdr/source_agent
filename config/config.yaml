@@ -1,5 +1,5 @@
 controller:
-  ip: 'localhoast'
+  IP: 'localhoast'
   port: '8080'
   capability_period: 10
 

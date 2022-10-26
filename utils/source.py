@@ -7,23 +7,26 @@ class CLD1015():
     def __init__(self, serialNumber=''):
         rm=pyvisa.ResourceManager()
         deviceList=rm.list_resources()
-        
+        self.FoundDevice = False
+        self.connected = False
         #looking through the device list
         for i in deviceList:
             print(i)
             if serialNumber in i:
                 device=i
                 print("laser driver found, device ID:", device)
-                FoundDevice=True
+                self.FoundDevice=True
             else:
                 print("Cannot find laser driver:", i)
                 break
                 
-            if FoundDevice:
+            if self.FoundDevice:
                 try:
                     self.CLD1015=rm.open_resource(device)
+                    self.connected = True
                     print("CLD1015 connected.")
                 except OSError:
+                    self.connected = False
                     print('Cannot open device')
                  
     #switching on laser
