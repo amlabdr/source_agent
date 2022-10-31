@@ -25,16 +25,18 @@ class RecvSpecification(MessagingHandler):
     def on_message(self, event):
         try:
             jsonData = json.loads(event.message.body)
+            logging.info("Analyzer will send receipt to the controller")
+            
             endpoint=jsonData['endpoint']
             name = jsonData['name']
             when = jsonData['when']
             capability = jsonData['capability']
-            exec_time = datetime.strptime(when, '%Y-%m-%d %H:%M:%S.%f')
-            #2022-05-23 18:03:19.461738'
             logging.info("specification received for {}".format(capability))
-
+            logging.info("Agent will send receipt to the controller for {}".format(capability))
+           
             #agent will publish a receipt for spec
             specification_receiptData=jsonData.copy()
+            
             specification_receiptData['receipt'] = jsonData['specification']
             del specification_receiptData['specification']
             topic = event.message.reply_to
@@ -42,11 +44,20 @@ class RecvSpecification(MessagingHandler):
             logging.info("agent will do the {}".format(capability))
             #agent will do the measurement/commanding
             self.source = CLD1015(self.serialNumber)
-            if self.source.FoundDevice and self.connected:
+            if self.source.connected:
+                
                 if capability == "measure":
-                    pass
+                    status=self.source.show_status()
+                    result_msg = jsonData.copy
+                    result_msg['result'] = result_msg['specification']
+                    del result_msg['specification']
+                    result_msg['resultValues'] = status
+                    logging.info("Agent will send result {} to the controller".format(result_msg['resultValues']))
+                    result_topic = 'topic:///multiverse/qnet/source/results'################
+                    Container(Send(self.server,result_topic, result_msg)).run()
+
                 elif capability == "command":
-                    pass
+                    self.source.laser_on()
                 else:
                     pass
             else:
