@@ -56,7 +56,7 @@ class RecvSpecification(MessagingHandler):
                     result_topic = 'topic:///multiverse/qnet/source/results'################
                     Container(Send(self.server,result_topic, result_msg)).run()
 
-                elif specification == "command": 
+                elif specification == "command":
                     parameters = jsonData['parameters']
                     if "Laser" in parameters:
                         if parameters["Laser"] == "ON":
