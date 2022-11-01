@@ -30,9 +30,9 @@ class RecvSpecification(MessagingHandler):
             endpoint=jsonData['endpoint']
             name = jsonData['name']
             when = jsonData['when']
-            capability = jsonData['capability']
-            logging.info("specification received for {}".format(capability))
-            logging.info("Agent will send receipt to the controller for {}".format(capability))
+            specification = jsonData['specification']
+            logging.info("specification received for {}".format(specification))
+            logging.info("Agent will send receipt to the controller for {}".format(specification))
            
             #agent will publish a receipt for spec
             specification_receiptData=jsonData.copy()
@@ -41,12 +41,12 @@ class RecvSpecification(MessagingHandler):
             del specification_receiptData['specification']
             topic = event.message.reply_to
             Container(Send(self.server,topic, specification_receiptData)).run()
-            logging.info("agent will do the {}".format(capability))
+            logging.info("agent will do the {}".format(specification))
             #agent will do the measurement/commanding
             self.source = CLD1015(self.serialNumber)
             if self.source.connected:
                 
-                if capability == "measure":
+                if specification == "measure":
                     status=self.source.show_status()
                     result_msg = jsonData.copy
                     result_msg['result'] = result_msg['specification']
@@ -56,7 +56,7 @@ class RecvSpecification(MessagingHandler):
                     result_topic = 'topic:///multiverse/qnet/source/results'################
                     Container(Send(self.server,result_topic, result_msg)).run()
 
-                elif capability == "command":
+                elif specification == "command":
                     self.source.laser_on()
                 else:
                     pass
