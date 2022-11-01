@@ -57,11 +57,32 @@ class RecvSpecification(MessagingHandler):
                     Container(Send(self.server,result_topic, result_msg)).run()
 
                 elif specification == "command":
-                    self.source.laser_on()
+                    parameters = jsonData['parameters']
+                    if "Laser" in parameters:
+                        if parameters["Laser"] == "ON":
+                            self.source.laser_on()
+                        elif parameters["Laser"] == "OFF":
+                            self.source.laser_off()
+                        else:
+                            pass
+                    elif "Tec" in parameters:
+                        if parameters["Tec"] == "ON":
+                            self.source.laser_on()
+                        elif parameters["Tec"] == "OFF":
+                            self.source.laser_off()
+                        else:
+                            pass
+                    elif "Laser_current" in parameters:
+                        self.source.set_laser_current(int(parameters["Laser_current"]))
+                    else:
+                        pass
+
                 else:
                     pass
+
             else:
                 logging.info("Cannot connect to source {}".format(self.serialNumber))
+
         except Exception:
             traceback.print_exc()
             
