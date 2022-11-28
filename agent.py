@@ -13,6 +13,9 @@ import logging
 import traceback
 from threading import Thread
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 #imports to use AMQP 1.0 communication protocol
 from utils.send import Send
 from utils.receive import RecvSpecification
@@ -23,7 +26,7 @@ def send_capability(url,topic,period,capabilityData):
         # Publish Capability in "/capabilities"
         try:
             Container(Send(url,topic, capabilityData)).run()
-            print('capability sent')
+            logging.info('capability sent')
         except Exception:
             logging.error("Agent can't send capability to the controller. Traceback:")
             traceback.print_exc()
@@ -37,7 +40,7 @@ if __name__ == '__main__':
     yf.close()
 
     PERIOD = config["controller"]["capability_period"]
-    url = config["controller"]["IP"] + config["controller"]["port"]
+    url = config["controller"]["IP"] +':'+ config["controller"]["port"]
     serialNumber = config["source"]["serial"]
 
     topic = 'topic://'+'/capabilities'
@@ -58,4 +61,5 @@ if __name__ == '__main__':
 
     #start lesstning for a specification from the controller
     topic='topic://'+command_capabilityData['endpoint']+'/specifications'
+    logging.info("Agent will start lesstning for a specification from the controller")
     Container(RecvSpecification(url,topic,serialNumber)).run()

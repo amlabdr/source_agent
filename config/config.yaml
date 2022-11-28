@@ -1,7 +1,7 @@
 controller:
-  IP: 'localhoast'
-  port: '8080'
-  capability_period: 10
+  IP: 'localhost'
+  port: '5672'
+  capability_period: 3600
 
 source:
   IP: 'localhost'
