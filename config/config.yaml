@@ -2,7 +2,3 @@ controller:
   IP: 'localhost'
   port: '5672'
   capability_period: 3600
-
-source:
-  IP: 'localhost'
-  serial: M00819452

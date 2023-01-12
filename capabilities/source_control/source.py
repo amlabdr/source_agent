@@ -1,4 +1,3 @@
-from proton import timestamp
 import pyvisa
 import time, datetime
 import logging 
