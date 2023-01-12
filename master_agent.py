@@ -37,23 +37,6 @@ def send_capability(url,topic,period,capabilityData):
         time.sleep(period)
 
 if __name__ == "__main__":
-    args = parse_args()
-    #define whitch capability to use
-    try:
-        module = "capabilities." + args.capability + ".capability_agent"
-        agent_path = "capabilities/" + args.capability + "/"
-        agent_module = importlib.import_module(module)
-        agent = agent_module.capability_agent()
-
-        #agent.run()
-    except ImportError as e:
-        logging.error(f"Agent {args.capability} not found \n use for example : coincidences_analyzing|photon_detection|source_control")
-        logging.error(e)
-        sys.exit(1)
-    except Exception as e:
-        logging.error("An error occurred:", e)
-        sys.exit(1)
-
     #read configuration file
     yf    = open('config/config.yaml','r')
     config = yaml.load(yf, Loader=yaml.SafeLoader)
@@ -61,6 +44,12 @@ if __name__ == "__main__":
     PERIOD = config["controller"]["capability_period"]
     url = config["controller"]["IP"] +':'+ config["controller"]["port"]
     topic = 'topic://'+'/capabilities'
+
+    CAPABILITY = config["agent"]["capability"]
+    module = "capabilities." + CAPABILITY + ".capability_agent"
+    agent_path = "capabilities/" + CAPABILITY + "/"
+    agent_module = importlib.import_module(module)
+    agent = agent_module.capability_agent()
 
     for capability in agent.capabilities:
         capabilityFile = open(agent_path + capability, 'r')
